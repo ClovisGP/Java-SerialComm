@@ -7,6 +7,8 @@ import java.util.Map;
 
 import helpers.LCBHelper;
 
+import static java.lang.Boolean.parseBoolean;
+
 public class LCBReqGenerator {
 
     /**
@@ -20,7 +22,9 @@ public class LCBReqGenerator {
         READ_ISTESTMODE,
         RESET,
         READ_CELL,
-        TARE_CELL;
+        TARE_CELL,
+        SET_CRC,
+        READ_CRC;
     }
     /**
      * The interface of the prototype of the request
@@ -40,9 +44,9 @@ public class LCBReqGenerator {
         requestFunctions.put(RequestList.RESET, (messageId, args) -> generateReset(messageId));
         requestFunctions.put(RequestList.READ_CELL, (messageId, args) -> generateReadCell(messageId));
         requestFunctions.put(RequestList.TARE_CELL, (messageId, args) -> generateTareCell(messageId));
+        requestFunctions.put(RequestList.SET_CRC, (messageId, args) -> generateSetCRC(messageId, (boolean) args[0]));
+        requestFunctions.put(RequestList.READ_CRC, (messageId, args) -> generateReadCRC(messageId));
     }
-
-
 
     /**
      * Generate the request to open one door
@@ -148,6 +152,29 @@ public class LCBReqGenerator {
     private static String generateTareCell(String messageId) throws IOException {
         /* Request construction */
         String finalReq = messageId + "56";
+        finalReq = finalReq + (char) (CRC8Manager.compute(finalReq.getBytes(StandardCharsets.UTF_8)) & 0xFF);
+        return LCBHelper.KeyWords.REQ + finalReq + LCBHelper.KeyWords.END;
+    }
+
+    /**
+     * Generate the request to read the state of CRC
+     * @return The request
+     */
+    private static String generateSetCRC(String messageId, Boolean Enabled) throws IOException {
+        /* Request construction */
+        String finalReq = messageId + "13";
+        finalReq = finalReq + (Enabled ? "1" : "0");
+        finalReq = finalReq + (char) (CRC8Manager.compute(finalReq.getBytes(StandardCharsets.UTF_8)) & 0xFF);
+        return LCBHelper.KeyWords.REQ + finalReq + LCBHelper.KeyWords.END;
+    }
+
+    /**
+     * Generate the request to read the state of CRC
+     * @return The request
+     */
+    private static String generateReadCRC(String messageId) throws IOException {
+        /* Request construction */
+        String finalReq = messageId + "14";
         finalReq = finalReq + (char) (CRC8Manager.compute(finalReq.getBytes(StandardCharsets.UTF_8)) & 0xFF);
         return LCBHelper.KeyWords.REQ + finalReq + LCBHelper.KeyWords.END;
     }

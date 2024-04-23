@@ -36,7 +36,6 @@ public class CRC8Manager {
             crc = CRCTABLE[data & 0xFF];
         }
         crc = (REFOUT ? reflectByte((byte)crc) : crc);
-        System.out.println((crc ^ XOROUT));
         return (crc ^ XOROUT);
     }
 
