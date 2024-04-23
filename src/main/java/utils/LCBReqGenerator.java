@@ -62,7 +62,7 @@ public class LCBReqGenerator {
         String finalReq = messageId + "58";
         finalReq = finalReq + module + ';' + LCBHelper.convertToTwoDigitsString(door);
         finalReq = finalReq + (char) (CRC8Manager.compute(finalReq.getBytes(StandardCharsets.UTF_8)) & 0xFF);
-        return LCBHelper.RequestKeyWords.REQ + finalReq + LCBHelper.RequestKeyWords.END;
+        return LCBHelper.KeyWords.REQ + finalReq + LCBHelper.KeyWords.END;
     }
 
     /**
@@ -83,7 +83,7 @@ public class LCBReqGenerator {
         String finalReq = messageId + "57";
         finalReq = finalReq + module + ';' + LCBHelper.convertToTwoDigitsString(door);
         finalReq = finalReq + (char) (CRC8Manager.compute(finalReq.getBytes(StandardCharsets.UTF_8)) & 0xFF);
-        return LCBHelper.RequestKeyWords.REQ + finalReq + LCBHelper.RequestKeyWords.END;
+        return LCBHelper.KeyWords.REQ + finalReq + LCBHelper.KeyWords.END;
     }
 
     /**
@@ -94,7 +94,7 @@ public class LCBReqGenerator {
         /* Request construction */
         String finalReq = messageId + "57";
         finalReq = finalReq + (char) (CRC8Manager.compute(finalReq.getBytes(StandardCharsets.UTF_8)) & 0xFF);
-        return LCBHelper.RequestKeyWords.REQ + finalReq + LCBHelper.RequestKeyWords.END;
+        return LCBHelper.KeyWords.REQ + finalReq + LCBHelper.KeyWords.END;
     }
 
     /**
@@ -105,7 +105,7 @@ public class LCBReqGenerator {
         /* Request construction */
         String finalReq = messageId + "62";
         finalReq = finalReq + (char) (CRC8Manager.compute(finalReq.getBytes(StandardCharsets.UTF_8)) & 0xFF);
-        return LCBHelper.RequestKeyWords.REQ + finalReq + LCBHelper.RequestKeyWords.END;
+        return LCBHelper.KeyWords.REQ + finalReq + LCBHelper.KeyWords.END;
     }
 
     /**
@@ -116,7 +116,7 @@ public class LCBReqGenerator {
         /* Request construction */
         String finalReq = messageId + "63";
         finalReq = finalReq + (char) (CRC8Manager.compute(finalReq.getBytes(StandardCharsets.UTF_8)) & 0xFF);
-        return LCBHelper.RequestKeyWords.REQ + finalReq + LCBHelper.RequestKeyWords.END;
+        return LCBHelper.KeyWords.REQ + finalReq + LCBHelper.KeyWords.END;
     }
 
     /**
@@ -127,7 +127,7 @@ public class LCBReqGenerator {
         /* Request construction */
         String finalReq = messageId + "54";
         finalReq = finalReq + (char) (CRC8Manager.compute(finalReq.getBytes(StandardCharsets.UTF_8)) & 0xFF);
-        return LCBHelper.RequestKeyWords.REQ + finalReq + LCBHelper.RequestKeyWords.END;
+        return LCBHelper.KeyWords.REQ + finalReq + LCBHelper.KeyWords.END;
     }
 
     /**
@@ -138,7 +138,7 @@ public class LCBReqGenerator {
         /* Request construction */
         String finalReq = messageId + "55";
         finalReq = finalReq + (char) (CRC8Manager.compute(finalReq.getBytes(StandardCharsets.UTF_8)) & 0xFF);
-        return LCBHelper.RequestKeyWords.REQ + finalReq + LCBHelper.RequestKeyWords.END;
+        return LCBHelper.KeyWords.REQ + finalReq + LCBHelper.KeyWords.END;
     }
 
     /**
@@ -149,6 +149,6 @@ public class LCBReqGenerator {
         /* Request construction */
         String finalReq = messageId + "56";
         finalReq = finalReq + (char) (CRC8Manager.compute(finalReq.getBytes(StandardCharsets.UTF_8)) & 0xFF);
-        return LCBHelper.RequestKeyWords.REQ + finalReq + LCBHelper.RequestKeyWords.END;
+        return LCBHelper.KeyWords.REQ + finalReq + LCBHelper.KeyWords.END;
     }
 }

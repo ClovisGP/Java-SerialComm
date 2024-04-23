@@ -4,7 +4,7 @@ package utils;
  * Manage the ID of the message of the LCB
  */
 public class LCBMsgIdManager {
-    int lastMsgId = 0;
+    int lastMsgId = 2;
 
     /**
      * Get the current ID

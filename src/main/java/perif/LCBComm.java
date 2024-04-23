@@ -8,6 +8,7 @@ import java.util.function.Consumer;
 import com.fazecast.jSerialComm.*;
 import helpers.LCBHelper;
 import utils.LCBMsgIdManager;
+import utils.LCBParserIncom;
 import utils.LCBReqGenerator;
 
 
@@ -16,6 +17,8 @@ public class LCBComm {
     private final Map<String, Consumer<String>> reqList = new HashMap<>();
 
     private final LCBMsgIdManager msgIdManager;
+
+    private final Object mutex = new Object();
 
 
     public LCBComm(String portName) {
@@ -42,10 +45,17 @@ public class LCBComm {
                 if (numBytes > 0) {
                     char newChar = (char) (readBuffer[0] & 0xFF);
                     incommingMessage.append(newChar);
-                    if (newChar == 'D' && incommingMessage.toString().contains(LCBHelper.RequestKeyWords.END.toString())) {
+                    if (newChar == 'D' && incommingMessage.toString().contains(LCBHelper.KeyWords.END.toString())) {
                         LCBHelper.cleanBeginMessage(incommingMessage);
 
-                        //reqList.get("Req").accept(incommingMessage.toString());//remove it when it is finsih
+                        LCBParserIncom.IncomingMessageDecoded decodeMsg = LCBParserIncom.decode(incommingMessage.toString());
+                        System.out.println(decodeMsg.id);
+                        if (decodeMsg.type == LCBHelper.KeyWords.ACK || decodeMsg.type == LCBHelper.KeyWords.RES) {
+                            if (reqList.get(decodeMsg.id) != null)
+                                reqList.get(decodeMsg.id).accept(incommingMessage.toString());
+                        } else {
+                            System.out.println(incommingMessage);
+                        }
 
 
                         incommingMessage = new StringBuilder();
@@ -73,14 +83,20 @@ public class LCBComm {
         Thread writeThread = new Thread(() -> {
             try {
                 String data  = LCBReqGenerator.requestFunctions.get(request).request(msgIdManager.getCurrentId(), reqArgs);
+                System.out.println("REQ => "+ data);
                 LCBPort.writeBytes(data.getBytes(), data.getBytes().length);
+                synchronized (mutex) {
+                    reqList.put(msgIdManager.getCurrentId(), callBack);
+                    msgIdManager.increment();
+                }
+
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         });
         writeThread.start();
-        reqList.put(msgIdManager.getCurrentId(), callBack);
-        msgIdManager.increment();
+
+
     }
 
 }

@@ -1,7 +1,7 @@
 package helpers;
 
 public class LCBHelper {
-    public enum RequestKeyWords {
+    public enum KeyWords {
         END("END"),
         REQ("REQ"),
         ACK("ACK"),
@@ -9,12 +9,21 @@ public class LCBHelper {
         NOT("NOT");
 
         private final String stringValue;
-        RequestKeyWords(String stringValue) {
+        KeyWords(String stringValue) {
             this.stringValue = stringValue;
         }
         @Override
         public String toString() {
             return stringValue;
+        }
+
+        public static KeyWords fromString(String text) {
+            for (KeyWords keyword : KeyWords.values()) {
+                if (keyword.stringValue.equalsIgnoreCase(text)) {
+                    return keyword;
+                }
+            }
+            return null;
         }
     }
     public static String convertToTwoDigitsString(int nbr) {
