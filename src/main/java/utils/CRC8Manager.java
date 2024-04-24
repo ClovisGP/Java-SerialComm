@@ -32,8 +32,8 @@ public class CRC8Manager {
 
     /**
      * Calculs the CRC8/Maxim
-     * @param bytes
-     * @return
+     * @param bytes The incoming bytes array
+     * @return The CRC value
      */
     private static int compute(byte[] bytes) {
         int crc = INITIAL;

@@ -79,16 +79,11 @@ public class LCBComm {
             }
         });
         readThread.start();
-
-
-
     }
 
-    public void closePort() {
-        if (LCBPort.closePort()) {
-            System.out.println("Port closed successfully.");
-        } else {
-            System.out.println("Unable to close the port.");
+    public void closePort() throws IOException {
+        if (!LCBPort.closePort()) {
+            throw new IOException("Unable to close the port");
         }
     }
 
