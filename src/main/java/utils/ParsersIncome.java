@@ -43,9 +43,7 @@ public class ParsersIncome {
      * Parse an Acknowledgement Structure
      */
     private static void parseACK(String incomingMsg, IncomingMessageDecoded returnObj) {
-    System.out.println(incomingMsg);
         returnObj.id = incomingMsg.substring(3, 5);
-        System.out.println("ID => " + returnObj.id);
         if (incomingMsg.charAt(5) == '0')
             returnObj.isError = true;
         returnObj.payload = String.valueOf(incomingMsg.charAt(7));
@@ -57,7 +55,7 @@ public class ParsersIncome {
      */
     private static void parseRES(String incomingMsg, IncomingMessageDecoded returnObj) {
         returnObj.id = incomingMsg.substring(3, 5);
-        if (incomingMsg.charAt(5) == '0')
+        if (incomingMsg.charAt(5) == '1')
             returnObj.isError = true;
         returnObj.payload = incomingMsg.substring(6, incomingMsg.length() - 4);
         returnObj.crc = incomingMsg.charAt(incomingMsg.length() - 4);

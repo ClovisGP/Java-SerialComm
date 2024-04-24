@@ -4,7 +4,7 @@ package utils;
  * Manage the ID of the message of the LCB
  */
 public class LCBMsgIdManager {
-    int lastMsgId = 0;
+    static int lastMsgId = 0;
 
     /**
      * Get the current ID
@@ -24,5 +24,12 @@ public class LCBMsgIdManager {
         lastMsgId++;
         if (lastMsgId > 255)
             lastMsgId = 0;
+    }
+
+    /**
+     * Reset the id count
+     */
+    public void resetId() {
+        lastMsgId = 0;
     }
 }

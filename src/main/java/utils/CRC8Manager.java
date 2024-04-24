@@ -1,5 +1,7 @@
 package utils;
 
+import java.nio.charset.StandardCharsets;
+
 /**
  * I'll be back on you, I promise you that CRC8Manager
  */
@@ -28,7 +30,12 @@ public class CRC8Manager {
         return instance == null ? (instance = new CRC8Manager() ): instance;
     }
 
-    public static int compute(byte[] bytes) {
+    /**
+     * Calculs the CRC8/Maxim
+     * @param bytes
+     * @return
+     */
+    private static int compute(byte[] bytes) {
         int crc = INITIAL;
         for (byte b : bytes) {
             int curByte = (REFIN ? reflectByte(b) : b & 0xFF);
@@ -52,5 +59,14 @@ public class CRC8Manager {
             }
         }
         return resByte;
+    }
+
+    /**
+     * Aims to calcul the CRC8/Maxim and return a char
+     * @param str The str to compute
+     * @return A char in the range of 0 to 127
+     */
+    public static char computeCRCToChar(String str) {
+        return (char) ((compute(str.getBytes(StandardCharsets.UTF_8))  & 0xFF) % 128);
     }
 }

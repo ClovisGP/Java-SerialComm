@@ -65,7 +65,7 @@ public class LCBReqGenerator {
         /* Request construction */
         String finalReq = messageId + "58";
         finalReq = finalReq + module + ';' + LCBHelper.convertToTwoDigitsString(door);
-        finalReq = finalReq + (char) (CRC8Manager.compute(finalReq.getBytes(StandardCharsets.UTF_8)) & 0xFF);
+        finalReq = finalReq + CRC8Manager.computeCRCToChar(finalReq);
         return LCBHelper.KeyWords.REQ + finalReq + LCBHelper.KeyWords.END;
     }
 
@@ -86,7 +86,7 @@ public class LCBReqGenerator {
         /* Request construction */
         String finalReq = messageId + "57";
         finalReq = finalReq + module + ';' + LCBHelper.convertToTwoDigitsString(door);
-        finalReq = finalReq + (char) (CRC8Manager.compute(finalReq.getBytes(StandardCharsets.UTF_8)) & 0xFF);
+        finalReq = finalReq + CRC8Manager.computeCRCToChar(finalReq);
         return LCBHelper.KeyWords.REQ + finalReq + LCBHelper.KeyWords.END;
     }
 
@@ -96,8 +96,8 @@ public class LCBReqGenerator {
      */
     private static String generateReadBattery(String messageId) throws IOException {
         /* Request construction */
-        String finalReq = messageId + "57";
-        finalReq = finalReq + (char) (CRC8Manager.compute(finalReq.getBytes(StandardCharsets.UTF_8)) & 0xFF);
+        String finalReq = messageId + "60";
+        finalReq = finalReq + CRC8Manager.computeCRCToChar(finalReq);
         return LCBHelper.KeyWords.REQ + finalReq + LCBHelper.KeyWords.END;
     }
 
@@ -108,7 +108,7 @@ public class LCBReqGenerator {
     private static String generateEnterTestMode(String messageId) throws IOException {
         /* Request construction */
         String finalReq = messageId + "62";
-        finalReq = finalReq + (char) (CRC8Manager.compute(finalReq.getBytes(StandardCharsets.UTF_8)) & 0xFF);
+        finalReq = finalReq + CRC8Manager.computeCRCToChar(finalReq);
         return LCBHelper.KeyWords.REQ + finalReq + LCBHelper.KeyWords.END;
     }
 
@@ -119,7 +119,7 @@ public class LCBReqGenerator {
     private static String generateCheckTestMode(String messageId) throws IOException {
         /* Request construction */
         String finalReq = messageId + "63";
-        finalReq = finalReq + (char) (CRC8Manager.compute(finalReq.getBytes(StandardCharsets.UTF_8)) & 0xFF);
+        finalReq = finalReq + CRC8Manager.computeCRCToChar(finalReq);
         return LCBHelper.KeyWords.REQ + finalReq + LCBHelper.KeyWords.END;
     }
 
@@ -130,7 +130,7 @@ public class LCBReqGenerator {
     private static String generateReset(String messageId) throws IOException {
         /* Request construction */
         String finalReq = messageId + "54";
-        finalReq = finalReq + (char) (CRC8Manager.compute(finalReq.getBytes(StandardCharsets.UTF_8)) & 0xFF);
+        finalReq = finalReq + CRC8Manager.computeCRCToChar(finalReq);
         return LCBHelper.KeyWords.REQ + finalReq + LCBHelper.KeyWords.END;
     }
 
@@ -141,7 +141,7 @@ public class LCBReqGenerator {
     private static String generateReadCell(String messageId) throws IOException {
         /* Request construction */
         String finalReq = messageId + "55";
-        finalReq = finalReq + (char) (CRC8Manager.compute(finalReq.getBytes(StandardCharsets.UTF_8)) & 0xFF);
+        finalReq = finalReq + CRC8Manager.computeCRCToChar(finalReq);
         return LCBHelper.KeyWords.REQ + finalReq + LCBHelper.KeyWords.END;
     }
 
@@ -152,7 +152,7 @@ public class LCBReqGenerator {
     private static String generateTareCell(String messageId) throws IOException {
         /* Request construction */
         String finalReq = messageId + "56";
-        finalReq = finalReq + (char) (CRC8Manager.compute(finalReq.getBytes(StandardCharsets.UTF_8)) & 0xFF);
+        finalReq = finalReq + CRC8Manager.computeCRCToChar(finalReq);
         return LCBHelper.KeyWords.REQ + finalReq + LCBHelper.KeyWords.END;
     }
 
@@ -164,7 +164,7 @@ public class LCBReqGenerator {
         /* Request construction */
         String finalReq = messageId + "13";
         finalReq = finalReq + (Enabled ? "1" : "0");
-        finalReq = finalReq + (char) (CRC8Manager.compute(finalReq.getBytes(StandardCharsets.UTF_8)) & 0xFF);
+        finalReq = finalReq + CRC8Manager.computeCRCToChar(finalReq);
         return LCBHelper.KeyWords.REQ + finalReq + LCBHelper.KeyWords.END;
     }
 
@@ -175,7 +175,7 @@ public class LCBReqGenerator {
     private static String generateReadCRC(String messageId) throws IOException {
         /* Request construction */
         String finalReq = messageId + "14";
-        finalReq = finalReq + (char) (CRC8Manager.compute(finalReq.getBytes(StandardCharsets.UTF_8)) & 0xFF);
+        finalReq = finalReq + CRC8Manager.computeCRCToChar(finalReq);
         return LCBHelper.KeyWords.REQ + finalReq + LCBHelper.KeyWords.END;
     }
 }

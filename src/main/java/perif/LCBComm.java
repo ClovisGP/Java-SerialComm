@@ -1,6 +1,8 @@
 package perif;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,11 +32,10 @@ public class LCBComm {
 
     /**
      * Read/parse the incoming message
-     * @param msg
+     * @param msg The message
      */
     private void ReadIncomingMsg(String msg) {
         ParsersIncome.IncomingMessageDecoded decodeMsg = ParsersIncome.decode(msg);
-        System.out.println(decodeMsg.id);
         if (decodeMsg.type == LCBHelper.KeyWords.ACK || decodeMsg.type == LCBHelper.KeyWords.RES) {
             if (reqList.get(decodeMsg.id) != null) {
                 if (reqList.get(decodeMsg.id).run(decodeMsg)) {
@@ -42,7 +43,7 @@ public class LCBComm {
                 }
             }
         } else {
-            System.out.println(msg);
+            System.out.println("LOG LCB => " + msg);
         }
     }
 
@@ -79,11 +80,7 @@ public class LCBComm {
         });
         readThread.start();
 
-        //check CRC
-        //remove it
-        //Reset
 
-        //reqList.put(msgIdManager.getCurrentId(), () => {});
 
     }
 
@@ -104,14 +101,13 @@ public class LCBComm {
     public void sendRequest(LCBReqGenerator.RequestList request, RequestCallback callBack, Object... reqArgs) {
         Thread writeThread = new Thread(() -> {
             try {
-                String data  = LCBReqGenerator.requestFunctions.get(request).request(msgIdManager.getCurrentId(), reqArgs);
-                System.out.println("REQ => "+ data);
+                String data = LCBReqGenerator.requestFunctions.get(request).request(msgIdManager.getCurrentId(), reqArgs);
                 LCBPort.writeBytes(data.getBytes(), data.getBytes().length);
+
                 synchronized (mutex) {
                     reqList.put(msgIdManager.getCurrentId(), callBack);
                     msgIdManager.increment();
                 }
-
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
