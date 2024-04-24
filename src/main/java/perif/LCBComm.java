@@ -1,20 +1,20 @@
 package perif;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Consumer;
+
 import com.fazecast.jSerialComm.*;
 import helpers.LCBHelper;
 import utils.LCBMsgIdManager;
-import utils.LCBParserIncom;
+import utils.ParsersIncome;
 import utils.LCBReqGenerator;
+import interfaces.RequestCallback;
 
 
 public class LCBComm {
     private final SerialPort LCBPort;
-    private final Map<String, Consumer<String>> reqList = new HashMap<>();
+    private final Map<String, RequestCallback> reqList = new HashMap<>();
 
     private final LCBMsgIdManager msgIdManager;
 
@@ -28,15 +28,32 @@ public class LCBComm {
         LCBPort.setComPortTimeouts(SerialPort.TIMEOUT_NONBLOCKING, 15000, 1000);
     }
 
-    public void openPort() {
-        if (LCBPort.openPort()) {
-            System.out.println("Port opened successfully.");
+    /**
+     * Read/parse the incoming message
+     * @param msg
+     */
+    private void ReadIncomingMsg(String msg) {
+        ParsersIncome.IncomingMessageDecoded decodeMsg = ParsersIncome.decode(msg);
+        System.out.println(decodeMsg.id);
+        if (decodeMsg.type == LCBHelper.KeyWords.ACK || decodeMsg.type == LCBHelper.KeyWords.RES) {
+            if (reqList.get(decodeMsg.id) != null) {
+                if (reqList.get(decodeMsg.id).run(decodeMsg)) {
+                    synchronized (mutex) { reqList.remove(decodeMsg.id);}
+                }
+            }
         } else {
-            System.out.println("Unable to open the port.");
-            return;
+            System.out.println(msg);
         }
+    }
 
-        // Start the read thread
+    /**
+     * Open the port and the listener
+     */
+    public void openPort() throws IOException {
+        if (!LCBPort.openPort())
+            throw new IOException("Unable to open the port");
+
+        /* Reader Thread */
         Thread readThread = new Thread(() -> {
             StringBuilder incommingMessage = new StringBuilder();
             while (true) {
@@ -48,15 +65,12 @@ public class LCBComm {
                     if (newChar == 'D' && incommingMessage.toString().contains(LCBHelper.KeyWords.END.toString())) {
                         LCBHelper.cleanBeginMessage(incommingMessage);
 
-                        LCBParserIncom.IncomingMessageDecoded decodeMsg = LCBParserIncom.decode(incommingMessage.toString());
-                        System.out.println(decodeMsg.id);
-                        if (decodeMsg.type == LCBHelper.KeyWords.ACK || decodeMsg.type == LCBHelper.KeyWords.RES) {
-                            if (reqList.get(decodeMsg.id) != null)
-                                reqList.get(decodeMsg.id).accept(incommingMessage.toString());
-                        } else {
-                            System.out.println(incommingMessage);
-                        }
-
+                        /* Async Reading */
+                        final String strToRead = incommingMessage.toString(); // Make a copy and final to avoid the erasing and a warning
+                        Thread asyncReading = new Thread(() -> {
+                            ReadIncomingMsg(strToRead);
+                        });
+                        asyncReading.start();
 
                         incommingMessage = new StringBuilder();
                     }
@@ -64,6 +78,13 @@ public class LCBComm {
             }
         });
         readThread.start();
+
+        //check CRC
+        //remove it
+        //Reset
+
+        //reqList.put(msgIdManager.getCurrentId(), () => {});
+
     }
 
     public void closePort() {
@@ -77,9 +98,10 @@ public class LCBComm {
     /**
      * Send a request to the LCB
      * @param request The identification of the request
-     * @param callBack
+     * @param callBack The callBack
+     * @param reqArgs The request arguments
      */
-    public void sendRequest(LCBReqGenerator.RequestList request, Consumer<String> callBack, Object... reqArgs) { // Maybe improve the callBack
+    public void sendRequest(LCBReqGenerator.RequestList request, RequestCallback callBack, Object... reqArgs) {
         Thread writeThread = new Thread(() -> {
             try {
                 String data  = LCBReqGenerator.requestFunctions.get(request).request(msgIdManager.getCurrentId(), reqArgs);

@@ -2,7 +2,7 @@ package utils;
 
 import helpers.LCBHelper;
 
-public class LCBParserIncom {
+public class ParsersIncome {
 
     /**
      * A decode message
